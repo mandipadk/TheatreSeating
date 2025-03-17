@@ -39,8 +39,14 @@ namespace TheatreSeating
                     {
                         if (seatingChart[i, j].Name == seat)
                         {
+                            // added check for reserved seats
+                            if(seatingChart[i, j].Reserved)
+                            {
+                                await DisplayAlert("Error", "Seat is already reserved.", "Ok");
+                                return;
+                            }
                             seatingChart[i, j].Reserved = true;
-                            await DisplayAlert("Successfully Reserverd", "Your seat was reserverd successfully!", "Ok");
+                            await DisplayAlert("Successfully Reserved", "Your seat was reserved successfully!", "Ok");
                             RefreshSeating();
                             return;
                         }
