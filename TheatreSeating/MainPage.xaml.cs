@@ -116,7 +116,7 @@ namespace TheatreSeating
             }
         }
 
-        //Assign to Team 1 Member
+        //Assigned to: Mandip Adhikari, w10167734
         private void ButtonReserveRange(object sender, EventArgs e)
         {
             //a comment
