@@ -184,7 +184,7 @@ namespace TheatreSeating
 
         }
 
-        //Assign to Team 3 Member
+        //Assign to: Dina Hadwan, w10166376
         private void ButtonCancelReservationRange(object sender, EventArgs e)
         {
 
