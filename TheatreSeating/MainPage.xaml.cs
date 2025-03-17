@@ -117,9 +117,58 @@ namespace TheatreSeating
         }
 
         //Assigned to: Mandip Adhikari, w10167734
-        private void ButtonReserveRange(object sender, EventArgs e)
+        private async void ButtonReserveRange(object sender, EventArgs e)
         {
-            //a comment
+            var input = await DisplayPromptAsync("Enter Seat Range", "Enter starting and ending seat (e.g., A1-A4):");
+
+            if (input != null)
+            {
+                string[] range = input.Split('-');
+
+                if (range.Length != 2)
+                {
+                    await DisplayAlert("Error", "Invalid range format.", "Ok");
+                    return;
+                }
+
+                string startSeat = range[0];
+                string endSeat = range[1];
+
+                int startRow = startSeat[0] - 'A';
+                int endRow = endSeat[0] - 'A';
+
+                if (startRow != endRow)
+                {
+                    await DisplayAlert("Error", "Seats must be in the same row.", "Ok");
+                    return;
+                }
+
+                int startCol = int.Parse(startSeat.Substring(1)) - 1;
+                int endCol = int.Parse(endSeat.Substring(1)) - 1;
+
+                if (startCol > endCol || startCol < 0 || endCol >= seatingChart.GetLength(1))
+                {
+                    await DisplayAlert("Error", "Invalid seat range.", "Ok");
+                    return;
+                }
+
+                for (int col = startCol; col <= endCol; col++)
+                {
+                    if (seatingChart[startRow, col].Reserved)
+                    {
+                        await DisplayAlert("Error", "One or more seats are already reserved.", "Ok");
+                        return;
+                    }
+                }
+
+                for (int col = startCol; col <= endCol; col++)
+                {
+                    seatingChart[startRow, col].Reserved = true;
+                }
+
+                await DisplayAlert("Success", "Seats reserved successfully!", "Ok");
+                RefreshSeating();
+            }
         }
 
         //Assign to Team 2 Member
