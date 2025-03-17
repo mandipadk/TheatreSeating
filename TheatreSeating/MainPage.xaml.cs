@@ -1,5 +1,9 @@
 ﻿using System.Collections.Specialized;
 using System.Reflection.Metadata;
+using System.Threading.Tasks;
+using System.Transactions;
+using AuthenticationServices;
+using SharedWithYouCore;
 
 namespace TheatreSeating
 {
@@ -185,9 +189,79 @@ namespace TheatreSeating
         }
 
         //Assign to: Dina Hadwan, w10166376
-        private void ButtonCancelReservationRange(object sender, EventArgs e)
+        private async void ButtonCancelReservationRange(object sender, EventArgs e)
         {
+            // Get user input
+            var input = await DisplayPromptAsync("Enter Seat Range", "Enter starting and ending seat (ex. A1:A4):");
 
+            if (input != null)
+            {
+                string[] range = input.Split(':');
+
+                // Checks valid range
+                if (range.Length != 2)
+                {
+                    await DisplayAlert("Error", "Invalid range format.", "Ok");
+                    return;
+                }
+
+                string startSeat = range[0];
+                string endSeat = range[1];
+
+                // Converts letter row to numerical row
+                int startRow = startSeat[0] - 'A';
+                int endRow = endSeat[0] - 'A';
+
+                
+                // Makes sure both seats are in same row
+                if (startRow != endRow)
+                {
+                    await DisplayAlert("Error", "Seats have to be in same row.", "Ok");
+                    return;
+                }
+
+                // Convert from string to integer
+                int startCol = int.Parse(startSeat.Substring(1)) - 1;
+                int endCol = int.Parse(endSeat.Substring(1)) - 1;
+
+
+                // Checks seat range 
+                if (startCol > endCol || startCol < 0 || endCol >= seatingChart.GetLength(1))
+                {
+                    await DisplayAlert("Error", "Invalid seat range.", "Ok");
+                    return;
+                }
+
+                // Checks if all seats are reserved before it cancels
+                bool anyNotReserved = false;
+                for(int col = startCol; col <= endCol; col++)
+                {
+                    if (!seatingChart[startRow, col].Reserved)
+                    {
+                        anyNotReserved = true;
+                        break;
+                    }
+                }
+
+                if (anyNotReserved)
+                {
+                    await DisplayAlert("Error", "One or more seats not reserved.", "Ok");
+                    return;
+
+                }
+
+                // Cancel the reservation seats
+                for(int col = startCol; col <= endCol; col++)
+                {
+                    seatingChart[startRow, col].Reserved = false;
+                }
+
+                await DisplayAlert("Sucess", "Seats reservation successfully canceled.", "Ok");
+
+                RefreshSeating();
+
+
+            }
         }
 
         //Assign to Team 4 Member
