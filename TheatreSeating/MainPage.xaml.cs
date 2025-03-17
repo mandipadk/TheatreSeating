@@ -118,13 +118,14 @@ namespace TheatreSeating
 
         //Assigned to: Mandip Adhikari, w10167734
         private async void ButtonReserveRange(object sender, EventArgs e)
-        {
-            var input = await DisplayPromptAsync("Enter Seat Range", "Enter starting and ending seat (e.g., A1-A4):");
+        {   
+            // Get input from user
+            var input = await DisplayPromptAsync("Enter Seat Range", "Enter starting and ending seat (e.g., A1:A4):");
 
             if (input != null)
             {
-                string[] range = input.Split('-');
-
+                string[] range = input.Split(':');
+                // checks if a valid range was entered
                 if (range.Length != 2)
                 {
                     await DisplayAlert("Error", "Invalid range format.", "Ok");
@@ -133,7 +134,7 @@ namespace TheatreSeating
 
                 string startSeat = range[0];
                 string endSeat = range[1];
-
+                // convert letter row into numeric row
                 int startRow = startSeat[0] - 'A';
                 int endRow = endSeat[0] - 'A';
 
@@ -151,7 +152,7 @@ namespace TheatreSeating
                     await DisplayAlert("Error", "Invalid seat range.", "Ok");
                     return;
                 }
-
+                // checks if any seats in the range are already reserved
                 for (int col = startCol; col <= endCol; col++)
                 {
                     if (seatingChart[startRow, col].Reserved)
