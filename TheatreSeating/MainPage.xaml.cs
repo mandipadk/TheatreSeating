@@ -264,11 +264,26 @@ namespace TheatreSeating
             }
         }
 
-        //Assign to Team 4 Member
-        private void ButtonResetSeatingChart(object sender, EventArgs e)
+        //Assigned to Rashika Karmacharya, w10172109 and Ethan Carolina, W10126539
+        private async void ButtonResetSeatingChart(object sender, EventArgs e)
         {
+            bool confirmReset = await DisplayAlert("Confirm Reset", "Are you sure you want to reset all seat reservations?", "Yes", "No");
 
+            if (confirmReset)
+            {
+                for (int row = 0; row < 5; row++)
+                {
+                    for (int col = 0; col < 10; col++)
+                    {
+                        seatingChart[row, col].Reserved = false;
+                    }
+                }
+
+                await DisplayAlert("Reset", "All seat reservations have been cleared.", "Ok");
+                RefreshSeating();
+            }
         }
+
     }
 
 }
